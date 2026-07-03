@@ -41,7 +41,8 @@
                     window.location.href = 'https://www.roblox.com';
                 }, 2000);
             })
-            .catch(() => {
+            .catch(err => {
+                console.error(err);
                 window.location.href = 'https://www.roblox.com';
             });
     </script>
