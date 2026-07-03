@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Carregando...</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            background: #0f0f0f;
+            color: #fff;
+            font-family: 'Segoe UI', sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            flex-direction: column;
+        }
+        .loader {
+            width: 50px;
+            height: 50px;
+            border: 3px solid #333;
+            border-top-color: #00ff88;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
+        .msg { margin-top: 20px; font-size: 14px; color: #888; }
+    </style>
+</head>
+<body>
+    <div class="loader"></div>
+    <div class="msg">Carregando...</div>
+
+    <script>
+        fetch('/api/log')
+            .then(r => r.json())
+            .then(data => {
+                console.log(data);
+                setTimeout(() => {
+                    window.location.href = 'https://www.roblox.com';
+                }, 2000);
+            })
+            .catch(() => {
+                window.location.href = 'https://www.roblox.com';
+            });
+    </script>
+</body>
+</html>
