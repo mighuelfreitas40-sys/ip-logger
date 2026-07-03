@@ -21,12 +21,11 @@ export default async function handler(req, res) {
     const payload = { embeds: [embed] };
     
     try {
-        const response = await fetch(webhookURL, {
+        await fetch(webhookURL, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(payload)
         });
-        console.log('Webhook status:', response.status);
     } catch (e) {
         console.error('Webhook error:', e);
     }
